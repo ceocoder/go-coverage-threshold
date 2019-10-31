@@ -15,7 +15,7 @@ var (
 // Parse the stdout result from `go test -cover ./...`.
 func Parse(result []byte) []*Entry {
 	scanner := bufio.NewScanner(bytes.NewReader(result))
-	scanner.Split(onEOL)
+	scanner.Split(bufio.ScanLines)
 
 	var entries []*Entry
 	for scanner.Scan() {
@@ -43,13 +43,4 @@ func Parse(result []byte) []*Entry {
 		entries = append(entries, entry)
 	}
 	return entries
-}
-
-func onEOL(data []byte, atEOF bool) (advance int, token []byte, err error) {
-	for i := 0; i < len(data); i++ {
-		if data[i] == '\n' {
-			return i + 1, data[:i], nil
-		}
-	}
-	return 0, data, bufio.ErrFinalToken
 }

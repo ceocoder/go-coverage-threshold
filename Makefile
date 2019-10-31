@@ -1,17 +1,13 @@
 ci: lint test test-cover test-race
 
 lint: setup-lint vendor
-	gometalinter --concurrency 2 --deadline 5m --exclude libexec --tests --vendor ./...
+	golangci-lint run
 
 run: vendor
 	go run ./cmd/go-coverage-threshold/main.go
 
-setup-vendor:
-	go get -u github.com/golang/dep/cmd/dep
-
 setup-lint:
-	go get -u github.com/alecthomas/gometalinter
-	gometalinter --install
+	wget -O - -q https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s v1.21.0
 
 test: vendor
 	go test ./...
@@ -22,7 +18,7 @@ test-cover: vendor
 test-race: vendor
 	go test -race ./...
 
-vendor: setup-vendor
-	dep ensure
+vendor:
+	go mod vendor
 
 .DO_NOT_CACHE: lint test test-cover test-race

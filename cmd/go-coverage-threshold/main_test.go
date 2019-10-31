@@ -9,7 +9,8 @@ import (
 func TestGoPath(t *testing.T) {
 	t.Parallel()
 
-	got, err := goPath()
+	got, module, err := goPath()
 	assert.NotEmpty(t, got)
 	assert.Nil(t, err)
+	assert.NotEmpty(t, module)
 }

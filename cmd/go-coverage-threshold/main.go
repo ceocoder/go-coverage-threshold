@@ -20,10 +20,11 @@ const (
 
 var (
 	threshold float64
+	profile   bool
 )
 
 func config(s string) *cover.Config {
-	if len(os.Args) >= 2 {
+	if len(os.Args) >= 2 && threshold != thresholdDefault {
 		// user specified -t or -threshold
 		// args take precedence over .cover.toml files
 		return &cover.Config{
@@ -44,6 +45,7 @@ func config(s string) *cover.Config {
 func flags() {
 	flag.Float64Var(&threshold, "threshold", thresholdDefault, thresholdUsage)
 	flag.Float64Var(&threshold, "t", thresholdDefault, thresholdUsage+" (shorthand)")
+	flag.BoolVar(&profile, "profile", false, "to generate profile file cover.out in current directory")
 	flag.Parse()
 }
 
@@ -83,7 +85,7 @@ func goPath() (string, string, error) {
 func main() {
 	flags()
 
-	output, err := cover.Run()
+	output, err := cover.Run(profile)
 	if err != nil {
 		log.Fatalf("cover failed %v - %v", err, string(output))
 	}

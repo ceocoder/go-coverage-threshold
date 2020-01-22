@@ -57,15 +57,14 @@ func goPath() (string, string, error) {
 
 	// check if the project uses go modules by running go mod why
 	// for a project that does not use go modules this command will fail
-	cmd := exec.Command("go", "mod", "why") // nolint: gas,gosec
+	cmd := exec.Command("go", "list", "-m") // nolint: gas,gosec
 	if out, err := cmd.CombinedOutput(); err == nil {
 		// go modules are active - use current working directory
-		moduleOut := strings.Split(string(out), "\n")
-		moduleName := moduleOut[1]
+		moduleName := strings.TrimSpace(string(out))
 
 		// look for working directory - this is non optional
 		// panic if no PWD is not set
-		if pwd, ok := os.LookupEnv("PWD"); ok {
+		if pwd, err := os.Getwd(); err == nil {
 			return pwd, moduleName, nil
 		}
 		log.Fatalf("PWD is not set in ENV, when using modules it is necessary to know current working directory in order to build package path")

@@ -25,7 +25,7 @@ func TestLoad(t *testing.T) {
 	cases := []Case{
 		{
 			cwd:     wd,
-			want:    &Config{70.0},
+			want:    &Config{65.0},
 			wantErr: nil,
 		},
 		{
